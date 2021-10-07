@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.view.View;
 
 public class SomeView extends View {
@@ -15,28 +16,28 @@ public class SomeView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        Paint defaultPaint = new Paint();
-
-        canvas.drawLine(0, 0, canvas.getWidth(), canvas.getHeight(), defaultPaint);
-
-        int i = 0;
-
-        while (i < canvas.getHeight()) {
-            i = i + 30;
-            canvas.drawLine(0, i, canvas.getWidth(), i, defaultPaint);
-        }
-
         Paint red = new Paint();
         red.setColor(Color.RED);
         red.setStyle(Paint.Style.FILL);
+        red.setStrokeWidth(5);
 
-        canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, canvas.getWidth() / 3, red);
+        int w = canvas.getWidth();
 
-        Paint yellow = new Paint();
-        yellow.setColor(Color.YELLOW);
-        yellow.setStyle(Paint.Style.STROKE);
-        yellow.setStrokeWidth(20);
+        int[] x = new int[w / 2];
+        for (int i = 0; i < x.length; i ++) {
+            x[i] = (- w / 2) + 2 * i;
+        }
 
-        canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, canvas.getWidth() / 3 + 10, yellow);
+        int h = canvas.getHeight();
+        int[] y = new int[x.length];
+
+        for(int i = 0; i < y.length; i++) {
+            y[i] = h/2 - x[i] * x[i] / 100;
+        }
+
+        for (int i = 0; i < x.length; i++) {
+            canvas.drawCircle(x[i] + w/2, y[i], 4, red);
+        }
+
     }
 }
