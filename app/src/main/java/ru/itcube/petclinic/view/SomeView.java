@@ -4,13 +4,18 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
+import android.os.CountDownTimer;
 import android.view.View;
 
 public class SomeView extends View {
     public SomeView(Context context) {
         super(context);
+        Counter counter = new Counter(100000000, 100);
+        counter.start();
     }
+
+    int x = 0;
+    double y = 0;
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -21,23 +26,40 @@ public class SomeView extends View {
         red.setStyle(Paint.Style.FILL);
         red.setStrokeWidth(5);
 
-        int w = canvas.getWidth();
+        canvas.drawCircle(x, (float)y, 10, red);
+    }
 
-        int[] x = new int[w / 2];
-        for (int i = 0; i < x.length; i ++) {
-            x[i] = (- w / 2) + 2 * i;
+    public void refresh() {
+        if (x >= getWidth()) {
+            x = 0;
+        } else {
+            x = x + 10;
+        }
+        y = Math.sin(x * Math.PI / 180) * 200 + getHeight() / 2;
+    }
+
+    class Counter extends CountDownTimer {
+
+        /**
+         * @param millisInFuture    The number of millis in the future from the call
+         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
+         *                          is called.
+         * @param countDownInterval The interval along the way to receive
+         *                          {@link #onTick(long)} callbacks.
+         */
+        public Counter(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
         }
 
-        int h = canvas.getHeight();
-        int[] y = new int[x.length];
-
-        for(int i = 0; i < y.length; i++) {
-            y[i] = h/2 - x[i] * x[i] / 100;
+        @Override
+        public void onTick(long millisUntilFinished) {
+            refresh();
+            invalidate();
         }
 
-        for (int i = 0; i < x.length; i++) {
-            canvas.drawCircle(x[i] + w/2, y[i], 4, red);
-        }
+        @Override
+        public void onFinish() {
 
+        }
     }
 }
